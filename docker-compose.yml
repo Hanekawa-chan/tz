@@ -6,15 +6,42 @@ services:
       - mongo
     build: .
     container_name: server
+    hostname: server
+    restart: always
     ports:
-      - "80:8080"
+      - "8080:8080"
+    expose:
+      - "8080"
     environment:
       MONGODB_URI: "${MONGODB_URI}"
+      MONGO_ROOT_USERNAME: "${MONGO_INITDB_ROOT_USERNAME}"
+      MONGO_ROOT_PASSWORD: "${MONGO_INITDB_ROOT_PASSWORD}"
+    networks:
+      - mongo_net
   mongo:
     image: mongo
     container_name: mongo
+    hostname: mongodb
     ports:
       - "27017:27017"
     expose:
       - "27017"
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: "${MONGO_INITDB_DATABASE}"
+      MONGO_INITDB_ROOT_USERNAME: "${MONGO_INITDB_ROOT_USERNAME}"
+      MONGO_INITDB_ROOT_PASSWORD: "${MONGO_INITDB_ROOT_PASSWORD}"
+    volumes:
+      - mongodb:/data/db
+      - mongoconfig:/data/configdb
     command: mongod
+    networks:
+      - mongo_net
+
+volumes:
+  mongodb:
+  mongoconfig:
+
+networks:
+  mongo_net:
+    driver: bridge

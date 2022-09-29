@@ -3,6 +3,7 @@ module tz
 go 1.19
 
 require (
+	github.com/google/uuid v1.3.0
 	github.com/gorilla/mux v1.8.0
 	github.com/rs/zerolog v1.28.0
 	go.mongodb.org/mongo-driver v1.10.2
