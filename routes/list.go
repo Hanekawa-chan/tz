@@ -13,7 +13,7 @@ import (
 func (h *Handler) ListGet(w http.ResponseWriter, r *http.Request) {
 	var err error
 
-	list, err := h.DB.ListGet()
+	list, err := h.DB.List.Get()
 	if err != nil {
 		log.Error().Err(err).Msg("list get")
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
@@ -46,7 +46,7 @@ func (h *Handler) ListEdit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	upserted, modified, err := h.DB.ListEdit(element)
+	upserted, modified, err := h.DB.List.Edit(element)
 	if err != nil {
 		log.Error().Err(err).Msg("db edit")
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
@@ -72,7 +72,7 @@ func (h *Handler) ListRemove(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	count, err := h.DB.ListRemove(id)
+	count, err := h.DB.List.Remove(id)
 	if err != nil {
 		log.Error().Err(err).Msg("db edit")
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
