@@ -23,9 +23,9 @@ services:
     container_name: mongo
     hostname: mongodb
     ports:
-      - "27017:27017"
+      - "27019:27019"
     expose:
-      - "27017"
+      - "27019"
     restart: always
     environment:
       MONGO_INITDB_DATABASE: "${MONGO_INITDB_DATABASE}"
@@ -34,7 +34,7 @@ services:
     volumes:
       - mongodb:/data/db
       - mongoconfig:/data/configdb
-    command: mongod
+    command: mongod --port 27019
     networks:
       - mongo_net
 

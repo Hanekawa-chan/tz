@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog/log"
-	"go.mongodb.org/mongo-driver/bson"
 	"io"
 	"net/http"
 	"strconv"
@@ -31,7 +30,6 @@ func (h *Handler) ListGet(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) ListEdit(w http.ResponseWriter, r *http.Request) {
 	var err error
-	var doc bson.D
 	var element models.Element
 
 	b, err := io.ReadAll(r.Body)
@@ -48,11 +46,16 @@ func (h *Handler) ListEdit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	doc = element.ToBson()
-
-	err = h.DB.ListEdit(doc)
+	upserted, modified, err := h.DB.ListEdit(element)
 	if err != nil {
 		log.Error().Err(err).Msg("db edit")
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	err = json.NewEncoder(w).Encode(map[string]int{"upserted": upserted, "modified": modified})
+	if err != nil {
+		log.Error().Err(err).Msg("json encode")
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
@@ -69,9 +72,16 @@ func (h *Handler) ListRemove(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.DB.ListRemove(id)
+	count, err := h.DB.ListRemove(id)
 	if err != nil {
 		log.Error().Err(err).Msg("db edit")
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	err = json.NewEncoder(w).Encode(map[string]int{"count": count})
+	if err != nil {
+		log.Error().Err(err).Msg("json encode")
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
