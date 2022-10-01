@@ -2,6 +2,7 @@ package routes
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog/log"
 	"io"
@@ -39,6 +40,7 @@ func (h *Handler) ListEdit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Println(string(b))
 	err = json.Unmarshal(b, &element)
 	if err != nil {
 		log.Error().Err(err).Msg("json unmarshal")

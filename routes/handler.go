@@ -26,6 +26,7 @@ func (h *Handler) Run() {
 
 	cred.Username = os.Getenv("MONGO_ROOT_USERNAME")
 	cred.Password = os.Getenv("MONGO_ROOT_PASSWORD")
+	log.Info().Msg(os.Getenv("MONGODB_URI"))
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGODB_URI")).SetAuth(cred))
 	if err != nil {
 		log.Fatal().Err(err).Msg("db connect")

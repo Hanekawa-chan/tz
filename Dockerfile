@@ -14,6 +14,9 @@ FROM gcr.io/distroless/base-debian10
 
 WORKDIR /
 
+ARG MONGODB_URI_ARG
+ENV MONGODB_URI=$MONGODB_URI_ARG
+
 COPY --from=build /tz /tz
 
 EXPOSE 8080

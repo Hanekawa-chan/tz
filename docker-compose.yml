@@ -4,7 +4,11 @@ services:
   tz:
     depends_on:
       - mongo
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MONGODB_URI_ARG: "${MONGODB_URI}"
     container_name: server
     hostname: server
     restart: always
